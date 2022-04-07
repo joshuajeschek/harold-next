@@ -5,8 +5,10 @@ import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import Stack from 'react-bootstrap/Stack';
 import Button from 'react-bootstrap/Button';
+import { DISCORD_APP_ID } from '../utils/constants';
 
 const Home: NextPage = () => {
+	console.log(DISCORD_APP_ID);
 	return (
 		<>
 			<Head>

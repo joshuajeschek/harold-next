@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "next dev src",
+    "build": "next build src",
+    "start": "next start src",
+    "lint": "next lint src"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.5",
