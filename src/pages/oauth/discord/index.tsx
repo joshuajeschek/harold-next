@@ -1,9 +1,10 @@
 import Head from 'next/head';
 import React, { useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
+import { oauthURL } from '../../../utils/constants';
 
 export default function Auth() {
-    // useEffect(() => window.location.replace('https://www.google.com'));
+    useEffect(() => window.location.replace(oauthURL.toString()));
     return (
         <>
             <Head>

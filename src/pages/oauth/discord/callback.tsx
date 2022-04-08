@@ -1,10 +1,9 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import {
-    BASE_API_URL,
     BASE_WEB_URL,
     DISCORD_APP_ID,
 	LocalStorageKeys,
@@ -27,8 +26,6 @@ const OauthDiscordCallback: NextPage<OauthDiscordCallbackProps> = ({ user }) => 
 		}
 		localStorage.setItem(LocalStorageKeys.DiscordId, user.id);
 	});
-
-	console.log(user);
 
     return (
         <>

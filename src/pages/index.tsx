@@ -8,7 +8,6 @@ import Button from 'react-bootstrap/Button';
 import { DISCORD_APP_ID, oauthURL } from '../utils/constants';
 
 const Home: NextPage = () => {
-	console.log(DISCORD_APP_ID);
 	return (
 		<>
 			<Head>
@@ -51,7 +50,7 @@ const Home: NextPage = () => {
 								<Card.Text>
 									Connect your Discord account with your Steam account.
 								</Card.Text>
-								<Button variant="primary" href={oauthURL.toString()}>Authenticate</Button>
+								<Button variant="primary" href='/oauth/discord'>Authenticate</Button>
 							</Card.Body>
 						</Card>
 					</Stack>

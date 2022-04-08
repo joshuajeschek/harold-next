@@ -1,5 +1,4 @@
 import Image from 'react-bootstrap/Image';
-import Link from 'next/link';
 import { Button, Stack } from 'react-bootstrap';
 import type { NextPage } from 'next';
 
