@@ -5,7 +5,7 @@ import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import Stack from 'react-bootstrap/Stack';
 import Button from 'react-bootstrap/Button';
-import { DISCORD_APP_ID } from '../utils/constants';
+import { DISCORD_APP_ID, oauthURL } from '../utils/constants';
 
 const Home: NextPage = () => {
 	console.log(DISCORD_APP_ID);
@@ -51,7 +51,7 @@ const Home: NextPage = () => {
 								<Card.Text>
 									Connect your Discord account with your Steam account.
 								</Card.Text>
-								<Button variant="primary" href='/auth'>Authenticate</Button>
+								<Button variant="primary" href={oauthURL.toString()}>Authenticate</Button>
 							</Card.Body>
 						</Card>
 					</Stack>
