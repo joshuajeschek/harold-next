@@ -50,7 +50,7 @@ const Home: NextPage = () => {
 								<Card.Text>
 									Connect your Discord account with your Steam account.
 								</Card.Text>
-								<Button variant="primary" href='/oauth/discord'>Authenticate</Button>
+								<Button variant="primary" href='/auth'>Authenticate</Button>
 							</Card.Body>
 						</Card>
 					</Stack>
