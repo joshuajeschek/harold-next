@@ -1,38 +1,30 @@
-import { RESTGetAPICurrentUserResult } from 'discord-api-types/v10';
-import { NextPage } from 'next';
-import Head from 'next/head';
-import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
+import { NextPage } from 'next';
+import { useRouter } from 'next/router';
 import Container from 'react-bootstrap/Container';
-import { apiFetch, get } from '../../utils/api';
-import { BASE_WEB_URL, DISCORD_APP_ID, oauthURL, STEAM_API_KEY } from '../../utils/constants';
 import SteamAuth from 'node-steam-openid';
+import { BASE_WEB_URL, DISCORD_APP_ID, oauthURL, robotBlockingPageProps, STEAM_API_KEY } from '../../utils/constants';
+import * as API from '../../utils/api';
+import { NextSeo } from 'next-seo';
 
 interface AuthIndexProps {
-    redirectUrl: string | null;
+    redirect: string | null;
 }
 
-const AuthIndex: NextPage<AuthIndexProps> = ({ redirectUrl }) => {
+const AuthIndex: NextPage<AuthIndexProps> = ({ redirect }) => {
 
     const { push } = useRouter();
 
     useEffect(() => {
-        if (redirectUrl)
-            push(redirectUrl);
+        if (redirect)
+            push(redirect);
         else
             push('/auth/auth-failed');
     });
     return (
         <>
-            <Head>
-                <title>Authentication</title>
-                <meta
-                    name="description"
-                    content="Connect your Discord Account with CS:GO"
-                />
-                <link rel="icon" href="/favicon.ico" />
-            </Head>
-            <Container className="text-center content">
+            <NextSeo title='Auth' nofollow noindex robotsProps={robotBlockingPageProps} />
+            <Container className='text-center content'>
                 <h4>You will be redirected to authenticate with Discord...</h4>
             </Container>
         </>
@@ -42,37 +34,43 @@ const AuthIndex: NextPage<AuthIndexProps> = ({ redirectUrl }) => {
 export async function getServerSideProps(ctx): Promise<{ props: AuthIndexProps }> {
 
     const code = ctx.query.code;
+    const error = ctx.query.error;
+    if (error)
+        return { props: { redirect: '/auth/failed' } };
     if (!code)
-        return { props: { redirectUrl: oauthURL.toString() } };
+        return { props: { redirect: oauthURL.toString() } };
 
     try {
         // get user data from bot api
-        const data = await apiFetch<{user: RESTGetAPICurrentUserResult}>(`/oauth/callback`, {
-            method: 'POST',
-			body: JSON.stringify({
-                code,
-				clientId: DISCORD_APP_ID,
-				redirectUri: `${BASE_WEB_URL}/auth`
-			})
-        });
-        if (!data) throw new Error('No user data returned');
+        const data = await API.post('/oauth/callback', {
+            code,
+            clientId: DISCORD_APP_ID,
+            redirectUri: `${BASE_WEB_URL}/auth`
+        })
+        // const data = await apiFetch<{user: RESTGetAPICurrentUserResult}>(`/oauth/callback`, {
+        //     method: 'POST',
+		// 	body: JSON.stringify({
+        //         code,
+		// 		clientId: DISCORD_APP_ID,
+		// 		redirectUri: `${BASE_WEB_URL}/auth`
+		// 	})
+        // });
+        if (!data) return { props: { redirect: '/auth/failed' } };
 
         // get authId from bot api
-        const res = await get('/auth', { discordId: data.user.id });
-        console.log(res);
-        if (!res.authId) throw new Error('No auth id returned');
+        const { authId } = await API.get('/auth', { discordId: data.user.id });
+        if (!authId) return { props: { redirect: '/auth/unavailable' } };
 
         // put authId from bot api into steamAuth
         const redirectUrl = await new SteamAuth({
             realm: BASE_WEB_URL,
-            returnUrl: `${BASE_WEB_URL}/auth/${res.authId}`,
+            returnUrl: `${BASE_WEB_URL}/auth/${authId}`,
             apiKey: STEAM_API_KEY
         }).getRedirectUrl();
 
-        return { props: { redirectUrl: redirectUrl || null } };
+        return { props: { redirect: redirectUrl || '/auth/unavailable' } };
     } catch (error) {
-        console.log(error);
-        return { props: { redirectUrl: null } };
+        return { props: { redirect: '/auth/unavailable' } };
     }
 };
 

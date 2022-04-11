@@ -1,3 +1,4 @@
+import { AdditionalRobotsProps } from 'next-seo/lib/types';
 import SteamAuth from 'node-steam-openid';
 
 export const DISCORD_APP_ID = process.env.NEXT_PUBLIC_DISCORD_APP_ID;
@@ -15,19 +16,12 @@ oauthURL.search = new URLSearchParams([
 	['client_id', DISCORD_APP_ID]
 ]).toString();
 
-export enum LocalStorageKeys {
-	DiscordId = 'discord_id',
-	DiscordAvatar = 'discord_avatar',
-	SteamId = 'steam_id',
-	SteamAvatar = 'steam_avatar'
-}
-
-let steam;
-export const getSteamAuth = () => {
-	steam ||= new SteamAuth({
-		realm: BASE_WEB_URL,
-		returnUrl: `${BASE_WEB_URL}/auth/steam/callback`,
-		apiKey: STEAM_API_KEY
-	});
-	return steam;
-}
+export const robotBlockingPageProps: AdditionalRobotsProps = {
+	nosnippet: true,
+	notranslate: true,
+	noimageindex: true,
+	noarchive: true,
+	maxSnippet: -1,
+	maxImagePreview: 'none',
+	maxVideoPreview: -1
+};
